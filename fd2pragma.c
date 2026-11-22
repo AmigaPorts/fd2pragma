@@ -13205,6 +13205,18 @@ static strptr mygetfile(strptr name, size_t *len)
   return ptr;
 }
 
+static void WarnDeprecated(void)
+{
+  fputs(
+    "\nfd2pragma: WARNING: fd2pragma is deprecated and will be removed from m68k-amigaos-gcc.\n\n"
+    "Convert each FD file and its prototypes to an SFD file once, and maintain that instead:\n"
+    "  fd2sfd --strict fd/mylib_lib.fd clib/mylib_protos.h -o sfd/mylib_lib.sfd\n"
+    "Then generate the headers from it with sfdc (also --mode=proto, clib, lvo, pragmas, stubs):\n"
+    "  sfdc --target=m68k-gcc-amigaos --mode=macros -o inline/mylib.h sfd/mylib_lib.sfd\n"
+    "\nDetails: https://github.com/AmigaPorts/m68k-amigaos-gcc/pull/368\n\n",
+    stderr);
+}
+
 int main(int argc, char **argv)
 {
   uint32 mode = 0, pragmode = PRAGMODE_PRAGLIB, callmode = TAGMODE_BOTH;
@@ -13212,6 +13224,7 @@ int main(int argc, char **argv)
   strptr clibbuf;
   size_t clibsize = 0;
 
+  WarnDeprecated();
   GetArgs(argc, argv);
 
   if((tempbuf = (uint8 *) AllocListMem(TEMPSIZE)))
